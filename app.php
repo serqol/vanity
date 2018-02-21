@@ -1,8 +1,11 @@
 <?php
+/**
+ * Usage php __FILE__ {authorName} {authorEmail}
+ */
 
 $rootDir = isset($argv[1]) && is_dir($argv[1]) ? $argv[1] : null;
-
-$rootDir = __DIR__ . '/test';
+$author  = isset($argv[2]) ? $argv[1] : null;
+$email   = isset($argv[3]) ? $argv[1] : null;
 
 $phpOpenTag = '<?php';
 
@@ -52,4 +55,4 @@ function applyAnnotation(array $phpClasses, $annotation) {
 }
 
 $phpClasses = getPhpClassesRecursive($rootDir);
-applyAnnotation($phpClasses, getAnnotation('serqol', 'serqol@mail.ru'));
+applyAnnotation($phpClasses, getAnnotation($author, $email));
