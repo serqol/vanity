@@ -25,6 +25,19 @@ function getPhpClassesRecursive($dir) {
     return $result;
 }
 
-$result = getPhpClassesRecursive($rootDir);
+function filterPhpClasses(array $phpClasses) {
+    $result = [];
+    foreach ($phpClasses as $path => $class) {
+        $contents = (string)file_get_contents("{$path}/{$class}");
+        if (strpos($contents, '<?php') !== 0) {
+            continue;
+        }
+        $result[] = $contents;
+    }
+    return $result;
+}
 
-var_dump($result);
+$phpClasses = getPhpClassesRecursive($rootDir);
+$filteredPhpClasses = filterPhpClasses($phpClasses);
+
+var_dump($filteredPhpClasses);
