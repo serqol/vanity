@@ -46,7 +46,8 @@ function applyAnnotation(array $phpClasses, $annotation) {
         $lastPart = substr($contents, strlen($phpOpenTag));
         $contents = $firstPart . $annotation . $lastPart;
         $fileStream = fopen($file, 'w');
-        var_dump($contents);
+        fwrite($fileStream, $contents);
+        fclose($fileStream);
     }
 }
 
