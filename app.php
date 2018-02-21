@@ -8,6 +8,15 @@ function getFileExtension($fileName) {
     return substr(strrchr($fileName, '.'), 1);
 }
 
+/**
+ * @param string $author
+ * @param string $email
+ * @return string
+ */
+function getAnnotation($author, $email) {
+    return "/**\n* @author {$author} <{$email}>\n*/";
+}
+
 function getPhpClassesRecursive($dir) {
     $result = [];
     $contents = array_filter(scandir($dir), function ($content) {
@@ -15,7 +24,7 @@ function getPhpClassesRecursive($dir) {
     });
     foreach ($contents as $content) {
         if (is_dir($subDirectory = "{$dir}/{$content}")) {
-            $result[$subDirectory] = getPhpClassesRecursive($subDirectory);
+            $result = array_merge($result, getPhpClassesRecursive($subDirectory));
             continue;
         }
         if (getFileExtension($content) === 'php') {
@@ -25,19 +34,18 @@ function getPhpClassesRecursive($dir) {
     return $result;
 }
 
-function filterPhpClasses(array $phpClasses) {
-    $result = [];
+function applyAnnotation(array $phpClasses, $annotation) {
     foreach ($phpClasses as $path => $class) {
-        $contents = (string)file_get_contents("{$path}/{$class}");
-        if (strpos($contents, '<?php') !== 0) {
+        if (strpos($contents = file_get_contents($path . '/' . $class), '<?php') !== 0) {
             continue;
         }
-        $result[] = $contents;
+        $contents = strtok($contents, '\n');
+        while (is_string($contents)) {
+            echo $contents;
+            $contents = strtok('\n');
+        }
     }
-    return $result;
 }
 
 $phpClasses = getPhpClassesRecursive($rootDir);
-$filteredPhpClasses = filterPhpClasses($phpClasses);
-
-var_dump($filteredPhpClasses);
+applyAnnotation($phpClasses, getAnnotation('serqol', 'serqol@mail.ru'));
