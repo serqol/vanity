@@ -4,6 +4,8 @@ $rootDir = isset($argv[1]) && is_dir($argv[1]) ? $argv[1] : null;
 
 $rootDir = __DIR__ . '/test';
 
+$phpOpenTag = '<?php';
+
 function getFileExtension($fileName) {
     return substr(strrchr($fileName, '.'), 1);
 }
@@ -14,11 +16,12 @@ function getFileExtension($fileName) {
  * @return string
  */
 function getAnnotation($author, $email) {
-    return "/**\n* @author {$author} <{$email}>\n*/";
+    return "\n/**\n* @author {$author} <{$email}>\n*/";
 }
 
 function getPhpClassesRecursive($dir) {
     $result = [];
+    global $phpOpenTag;
     $contents = array_filter(scandir($dir), function ($content) {
         return !in_array($content, ['.', '..']);
     });
@@ -27,7 +30,7 @@ function getPhpClassesRecursive($dir) {
             $result = array_merge($result, getPhpClassesRecursive($subDirectory));
             continue;
         }
-        if (getFileExtension($content) === 'php') {
+        if (getFileExtension($content) === 'php' && (strpos(file_get_contents($dir . '/' . $content), $phpOpenTag) === 0)) {
             $result[$dir] = $content;
         }
     }
@@ -35,15 +38,15 @@ function getPhpClassesRecursive($dir) {
 }
 
 function applyAnnotation(array $phpClasses, $annotation) {
+    global $phpOpenTag;
     foreach ($phpClasses as $path => $class) {
-        if (strpos($contents = file_get_contents($path . '/' . $class), '<?php') !== 0) {
-            continue;
-        }
-        $contents = strtok($contents, '\n');
-        while (is_string($contents)) {
-            echo $contents;
-            $contents = strtok('\n');
-        }
+        $file = $path . '/' . $class;
+        $contents = file_get_contents($file);
+        $firstPart = substr($contents, 0, strlen($phpOpenTag));
+        $lastPart = substr($contents, strlen($phpOpenTag));
+        $contents = $firstPart . $annotation . $lastPart;
+        $fileStream = fopen($file, 'w');
+        var_dump($contents);
     }
 }
 
