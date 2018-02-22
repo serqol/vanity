@@ -1,14 +1,5 @@
 <?php
 /**
-* @author serqol <serqol@mail.ru>
-*/
-/**
-* @author serqol <serqol@mail.ru>
-*/
-/**
-* @author  <>
-*/
-/**
  * Usage php __FILE__ {directory} {authorName} {authorEmail}
  */
 
@@ -28,7 +19,7 @@ function getFileExtension($fileName) {
  * @return string
  */
 function getAnnotation($author, $email) {
-    return "\n/**\n* @author {$author} <{$email}>\n*/";
+    return "\n/** @author {$author} <{$email}> */\n";
 }
 
 function getPhpClassesRecursive($dir) {
