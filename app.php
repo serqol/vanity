@@ -1,5 +1,11 @@
 <?php
 /**
+* @author serqol <serqol@mail.ru>
+*/
+/**
+* @author serqol <serqol@mail.ru>
+*/
+/**
 * @author  <>
 */
 /**
@@ -9,8 +15,6 @@
 $rootDir = isset($argv[1]) && is_dir($argv[1]) ? $argv[1] : null;
 $author  = isset($argv[2]) ? $argv[2] : null;
 $email   = isset($argv[3]) ? $argv[3] : null;
-
-$rootDir = __DIR__;
 
 $phpOpenTag = '<?php';
 
